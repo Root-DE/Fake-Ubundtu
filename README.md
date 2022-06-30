@@ -1,1 +1,2 @@
-# Fake-Ubundtu
+# Fake-Ubuntu
+This repo aims for demonstration purpose.
