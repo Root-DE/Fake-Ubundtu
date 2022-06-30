@@ -1,0 +1,27 @@
+name: Docker Scan
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron:  '0 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    container: ghcr.io/root-de/applied-cybersecurity/scan:latest
+    steps:
+    - name: set dev env
+      run: echo "image_tag_dev=ubuntu" >> $GITHUB_ENV
+    - name: get SBOM
+      run: syft ${{ env.image_tag_dev }} -o json --file sbom.json
+    - name: get Vulnerabilites
+      run: grype sbom.json -o json --file vuln.json
+    - name: upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: scan
+        path: ./*.json
+    - name: notify listener
+      run: send_script.sh
