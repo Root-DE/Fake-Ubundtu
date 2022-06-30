@@ -12,10 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/root-de/applied-cybersecurity/scan:latest
     steps:
-    - name: set dev env
-      run: echo "image_tag_dev=ubuntu" >> $GITHUB_ENV
     - name: get SBOM
-      run: syft ${{ env.image_tag_dev }} -o json --file sbom.json
+      run: syft ubuntu:latest -o json --file sbom.json
     - name: get Vulnerabilites
       run: grype sbom.json -o json --file vuln.json
     - name: upload artifacts
